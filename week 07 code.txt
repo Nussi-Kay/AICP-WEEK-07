@@ -1,0 +1,112 @@
+#include <iostream> 
+#include <iomanip> 
+#include <string> 
+#include <vector> 
+#include <algorithm> 
+#include <numeric> 
+using namespace std;
+// Function prototypes 
+void displayCharities(const vector<string>& charities);
+int getCharityChoice();
+double getShoppingBill();
+double calculateDonation(double shoppingBill);
+voidrecordAndTotalDonation(vector<double>&charityTotals,const 
+vector<string>& charities);
+void showTotals(const vector<double>& charityTotals, const vector<string>& 
+charities);
+int main() { 
+ // TASK 1 - Set up the donation system 
+ vector<string> charities(3);
+ for (int i = 0; i < 3; ++i) {
+ cout << "Enter the name of Charity " << i + 1 << ": ";
+ cin >> charities[i];
+ } 
+ vector<double> charityTotals(3, 0.0); // Initialize totals to zero 
+ // TASK 2 - Record and total each donation 
+ char continueDonating = 'y';
+ int customerCount = 1;
+ while (tolower(continueDonating) == 'y') { 
+ cout << "\nCustomer " << customerCount << ":\n";
+ recordAndTotalDonation(charityTotals, charities);
+ // Ask if the user wants to continue donating 
+ cout << "\nDo you want to continue donating? (y/n): ";
+ cin >> continueDonating;
+ ++customerCount;
+ } 
+ // TASK 3 - Show the totals so far 
+ showTotals(charityTotals, charities);
+ return 0;
+} 
+// Function to display charity names with numbers 
+void displayCharities(const vector<string>& charities) { 
+ cout << "Choose a charity (1, 2, or 3):\n";
+ for (size_t i = 0; i < charities.size(); ++i) {
+ cout << i + 1 << ". " << charities[i] << endl;
+ } 
+} 
+// Function to get a valid charity choice from the user 
+int getCharityChoice() { 
+ int choice;
+ cout << "Enter your choice: ";
+ cin >> choice;
+ // Validate the input 
+ while (choice < 1 || choice > 3) { 
+ cout << "Invalid choice. Please enter 1, 2, or 3: ";
+ cin >> choice;
+ } 
+ return choice;
+} 
+// Function to get the shopping bill amount from the user 
+double getShoppingBill() { 
+ double bill;
+ cout << "Enter the shopping bill amount: $";
+ cin >> bill;
+ // Validate the input 
+ while (bill < 0) { 
+ cout << "Invalid amount. Please enter a non-negative value: $";
+ cin >> bill;
+ } 
+ return bill;
+} 
+// Function to calculate the donation based on the shopping bill 
+double calculateDonation(double shoppingBill) { 
+ return 0.01 * shoppingBill;
+} 
+// Function to record and total each donation 
+void recordAndTotalDonation(vector<double>& charityTotals, const 
+vector<string>& charities) { 
+ // Display charities 
+ displayCharities(charities);
+ // Get charity choice and shopping bill from the user 
+ int choice = getCharityChoice();
+ double shoppingBill = getShoppingBill();
+ // Calculate donation 
+ double donation = calculateDonation(shoppingBill);
+ // Update the total for the chosen charity 
+ charityTotals[choice - 1] += donation;
+ // Output donation information 
+ cout << "Donated $" << fixed << setprecision(2) << donation << " to " << 
+charities[choice - 1] << endl;
+} 
+// Function to show the totals so far 
+void showTotals(const vector<double>& charityTotals, const vector<string>& 
+charities) { 
+ // Create a vector of pairs for sorting 
+ vector<pair<double, string>> sortedTotals;
+ for (size_t i = 0; i < charities.size(); ++i) {
+ sortedTotals.push_back({charityTotals[i], charities[i]});
+ } 
+ // Sort totals in descending order 
+ sort(sortedTotals.rbegin(), sortedTotals.rend());
+ // Display totals 
+ cout << "\nCharity Totals (in descending order):\n";
+ for (const auto& pair : sortedTotals) { 
+ cout << pair.second << ": $" << fixed << setprecision(2) << pair.first << 
+endl;
+ } 
+ // Calculate and display grand total 
+ double grandTotal = accumulate(charityTotals.begin(), charityTotals.end(), 
+0.0);
+ cout << "\nGRAND TOTAL DONATED TO CHARITY: $" << fixed << 
+setprecision(2) << grandTotal << endl;
+} 
